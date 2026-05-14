@@ -8,6 +8,23 @@
 <meta name="apple-mobile-web-app-title" content="Training Log">
 <meta name="theme-color" content="#08111d">
 <title>Training Log</title>
+<template id="__bundler_thumbnail" data-bg-color="#08111d">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#0691ff"/>
+        <stop offset="100%" stop-color="#0a4a82"/>
+      </linearGradient>
+    </defs>
+    <circle cx="600" cy="400" r="220" fill="none" stroke="#18283e" stroke-width="40"/>
+    <circle cx="600" cy="400" r="220" fill="none" stroke="url(#g)" stroke-width="56" stroke-linecap="round"
+            stroke-dasharray="1382" stroke-dashoffset="500"
+            transform="rotate(-90 600 400)"/>
+    <text x="600" y="430" text-anchor="middle" fill="#f9fcff"
+          font-family="'Space Grotesk', system-ui, sans-serif" font-weight="700"
+          font-size="160" letter-spacing="-4">01:18</text>
+  </svg>
+</template>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -798,3 +815,1518 @@
   .ring-svg {
     width: 100%;
     height: 100%;
+    transform: rotate(-90deg);
+    display: block;
+  }
+  .ring-bg {
+    fill: none;
+    stroke: var(--bg-2);
+    stroke-width: 10;
+  }
+  .ring-fg {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 14;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.18s linear, stroke 0.3s;
+    filter: drop-shadow(0 0 8px rgba(6,145,255,0.55));
+  }
+  .timer-display.work .ring-fg {
+    stroke: var(--success);
+    filter: drop-shadow(0 0 10px rgba(0,229,161,0.7));
+  }
+  .timer-display.rest .ring-fg {
+    stroke: var(--danger);
+    filter: drop-shadow(0 0 10px rgba(255,77,109,0.7));
+  }
+  .timer-display.done .ring-fg {
+    stroke: var(--success);
+  }
+
+  /* Content inside the ring */
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    pointer-events: none;
+  }
+
+  .timer-phase {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .timer-display.work .timer-phase { color: var(--success); }
+  .timer-display.rest .timer-phase { color: var(--danger); }
+  .timer-display.active .timer-phase { color: var(--accent); }
+
+  .timer-time {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(4rem, 19vw, 6.4rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 28px rgba(6,145,255,0.25);
+  }
+  .timer-display.work .timer-time { text-shadow: 0 0 36px rgba(0,229,161,0.35); }
+  .timer-display.rest .timer-time { text-shadow: 0 0 36px rgba(255,77,109,0.35); }
+
+  .ring-round {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+    opacity: 0.85;
+  }
+  .ring-round small {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    margin-right: 6px;
+    font-weight: 600;
+    vertical-align: 2px;
+  }
+
+  .timer-meta {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    margin-top: 14px;
+    font-weight: 600;
+  }
+  .timer-meta b {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    margin-left: 6px;
+    letter-spacing: 0.03em;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .timer-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .btn-timer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+    cursor: pointer;
+    min-height: 56px;
+    transition: all 0.15s;
+  }
+  .btn-timer:active { transform: scale(0.98); }
+  .btn-timer.primary {
+    background: linear-gradient(180deg, var(--accent), #0578d4);
+    border-color: var(--accent);
+    box-shadow: 0 4px 18px rgba(6,145,255,0.4);
+    color: white;
+  }
+  .btn-timer.primary.paused {
+    background: linear-gradient(180deg, #ffa30b, #e68900);
+    border-color: #ffa30b;
+    box-shadow: 0 4px 18px rgba(255,163,11,0.35);
+  }
+  .btn-timer.danger {
+    color: var(--text-2);
+  }
+  .btn-timer.danger:active { color: var(--danger); border-color: var(--danger); }
+
+  .stepper-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stepper {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .stepper:active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* Beep indicator */
+  .timer-pulse {
+    position: absolute;
+    top: 12px; right: 14px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted-2);
+    transition: background 0.1s;
+  }
+  .timer-display.active .timer-pulse {
+    background: var(--accent);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.4); }
+  }
+
+  /* ─── VERLAUF ────────────────────────────── */
+  .log-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    font-size: 0.78rem;
+    line-height: 2;
+  }
+  .log-empty .icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--muted-2);
+  }
+
+  .log-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .num.accent { color: var(--accent); }
+  .stat .label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .log-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+  }
+  .log-entry.expanded { border-color: var(--border-2); }
+
+  .log-entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 12px;
+  }
+  .log-date {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .log-date .day {
+    color: var(--muted);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .log-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: rgba(6,145,255,0.08);
+    border: 1px solid rgba(6,145,255,0.25);
+    border-radius: 100px;
+    padding: 3px 9px;
+    letter-spacing: 0.05em;
+  }
+
+  .log-body {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .log-entry.expanded .log-body { display: block; }
+
+  .log-ex {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    gap: 8px;
+  }
+  .log-ex:last-child { border-bottom: none; }
+  .log-ex .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .log-ex .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-2);
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+  .log-ex .val .interval {
+    display: inline-block;
+    color: var(--accent);
+    margin-right: 6px;
+  }
+  .log-ex .note {
+    color: var(--muted);
+    font-size: 0.62rem;
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .btn-clear {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.2s;
+  }
+  .btn-clear:active { color: var(--danger); border-color: var(--danger); }
+
+  /* Scroll padding for fixed save bar on session view */
+  #view-session { padding-bottom: 30px; }
+
+  /* Hide save bar except on session */
+  .save-bar { display: none; }
+  body[data-tab="session"] .save-bar { display: block; }
+
+  /* iOS no-zoom: ensure input font-size ≥ 16px */
+  input[type="number"], input[type="text"] {
+    font-size: 16px;
+  }
+  .set-input { font-size: 16px; }
+  .config-cell input { font-size: 22px; }
+  .trx-cell input { font-size: 15px; }
+  .band-row input { font-size: 15px; }
+  .note-input { font-size: 14px; }
+  .ex-name { font-size: 17px; }
+  /* re-establish display sizes via css var if needed */
+</style>
+</head>
+<body data-tab="session">
+
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark" style="background-position: center top"></div>
+      <div class="brand-name">TRAINING MANUAL</div>
+    </div>
+    <div class="date-badge">
+      <strong id="today-date">—</strong>
+      <span id="today-weekday">—</span>
+    </div>
+  </header>
+
+  <div class="meta-strip">
+    <div class="meta-row">
+      <span>Session Progress</span>
+      <span class="count"><b id="prog-done">0</b> / <span id="prog-total">5</span> Übungen</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-target="session" onclick="switchTab('session', this)"><span class="dot"></span>Session</button>
+    <button class="tab" data-target="timer" onclick="switchTab('timer', this)"><span class="dot"></span>Timer</button>
+    <button class="tab" data-target="log" onclick="switchTab('log', this)"><span class="dot"></span>Verlauf</button>
+  </div>
+
+  <!-- ═══ SESSION ═══ -->
+  <div class="view active" id="view-session">
+    <div class="section-label">Unterkörper · Kraft</div>
+    <div id="card-squats"></div>
+    <div id="card-bulgarian"></div>
+
+    <div class="section-label">Rücken · Core</div>
+    <div id="card-backext"></div>
+    <div id="card-ghd"></div>
+
+    <div class="section-label">TRX · Stabilisation</div>
+    <div id="card-trx"></div>
+  </div>
+
+  <!-- ═══ TIMER ═══ -->
+  <div class="view" id="view-timer">
+    <div class="timer-modes">
+      <button class="timer-mode active" data-mode="emom" onclick="setTimerMode('emom', this)">EMOM</button>
+      <button class="timer-mode" data-mode="fortime" onclick="setTimerMode('fortime', this)">For Time</button>
+      <button class="timer-mode" data-mode="tabata" onclick="setTimerMode('tabata', this)">Tabata</button>
+    </div>
+
+    <!-- EMOM CONFIG -->
+    <div class="timer-config" id="config-emom">
+      <div class="picker-label" style="margin-bottom:10px">EMOM Intervall</div>
+      <div class="interval-grid" id="emom-interval-grid"></div>
+      <div class="config-row">
+        <div class="config-cell">
+          <label>Runden</label>
+          <div class="stepper-row">
+            <button class="stepper" onclick="bumpEmomRounds(-1)">−</button>
+            <input type="number" id="emom-rounds" value="10" inputmode="numeric" min="1" max="99">
+            <button class="stepper" onclick="bumpEmomRounds(1)">+</button>
+          </div>
+        </div>
+        <div class="config-cell">
+          <label>Pro Runde</label>
+          <div class="val">
+            <input type="text" id="emom-interval-display" value="1:00" readonly style="pointer-events:none">
+            <span class="unit">min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOR TIME CONFIG -->
+    <div class="timer-config" id="config-fortime" style="display:none">
+      <div class="config-row single">
+        <div class="config-cell" style="text-align:center;padding:14px">
+          <label>Modus</label>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;color:var(--text);letter-spacing:0.05em">⏱ Aufwärts-Stoppuhr</div>
+          <div style="font-size:0.62rem;color:var(--muted);margin-top:4px;letter-spacing:0.1em">Start · Pause · Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABATA CONFIG -->
+    <div class="timer-config" id="config-tabata" style="display:none">
+      <div class="config-row three">
+        <div class="config-cell">
+          <label>Work</label>
+          <div class="val">
+            <input type="number" id="tabata-work" value="20" inputmode="numeric" min="1" max="999">
+            <span class="unit">s</span>
+          </div>
+        </div>
+        <div class="config-cell">
+          <label>Rest</label>
+          <div class="val">
+            <input type="number" id="tabata-rest" value="10" inputmode="numeric" min="1" max="999">
+            <span class="unit">s</span>
+          </div>
+        </div>
+        <div class="config-cell">
+          <label>Runden</label>
+          <div class="val">
+            <input type="number" id="tabata-rounds" value="8" inputmode="numeric" min="1" max="99">
+            <span class="unit">×</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPLAY -->
+    <div class="timer-display" id="timer-display">
+      <div class="timer-pulse"></div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
+          <circle class="ring-fg" id="ring-fg" cx="100" cy="100" r="88"
+            stroke-dasharray="552.92" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="ring-center">
+          <div class="timer-phase" id="timer-phase">BEREIT</div>
+          <div class="timer-time" id="timer-time">01:00</div>
+          <div class="ring-round"><small>Runde</small><span id="timer-round">0/10</span></div>
+        </div>
+      </div>
+      <div class="timer-meta" id="timer-meta-row">
+        <span id="timer-total-wrap">Total <b id="timer-total">10:00</b></span>
+      </div>
+    </div>
+
+    <div class="timer-controls">
+      <button class="btn-timer primary" id="btn-start" onclick="timerToggle()">Start</button>
+      <button class="btn-timer danger" id="btn-reset" onclick="timerReset()">Reset</button>
+    </div>
+
+    <div style="font-size:0.6rem;color:var(--muted);text-align:center;letter-spacing:0.15em;text-transform:uppercase;margin-top:10px">
+      ♪ Beep + Vibration bei jedem Intervallwechsel
+    </div>
+  </div>
+
+  <!-- ═══ VERLAUF ═══ -->
+  <div class="view" id="view-log">
+    <div id="log-stats-wrap"></div>
+    <div id="log-content"></div>
+  </div>
+
+</div>
+
+<!-- Sticky save bar (session only) -->
+<div class="save-bar">
+  <div class="inner">
+    <button class="btn-save-session" id="save-btn" onclick="saveSession()">
+      Session Speichern
+    </button>
+  </div>
+</div>
+
+<script>
+/* ═════════════════════════════════════════════════════════
+   STATE & CONSTANTS
+   ═════════════════════════════════════════════════════════ */
+const STORE_KEY    = 'training_log_v2';
+const NAMES_KEY    = 'training_log_names';
+const TEMPLATES_KEY= 'training_log_templates';
+
+const INTERVALS = ['E1MOM','E1:30','E2MOM','E2:15','E2:30','E3MOM','E4MOM','Kein'];
+const INTERVAL_SECONDS = {
+  'E1MOM': 60, 'E1:30': 90, 'E2MOM': 120, 'E2:15': 135,
+  'E2:30': 150, 'E3MOM': 180, 'E4MOM': 240, 'Kein': 0
+};
+
+const EXERCISES = [
+  { id:'squats',    name:'Back Squat',           type:'weighted',  defSets:5, defReps:5,  defWeight:80, defInterval:'E3MOM', mount:'card-squats' },
+  { id:'bulgarian', name:'Bulgarian Split Squat',type:'weighted',  defSets:4, defReps:10, defWeight:0,  defInterval:'Kein',  repsLabel:'Reps/Seite', mount:'card-bulgarian' },
+  { id:'backext',   name:'Backextensions',       type:'bodyweight',defSets:4, defReps:20, defWeight:0,  defInterval:'Kein',  mount:'card-backext' },
+  { id:'ghd',       name:'GHD Situps',           type:'bodyweight',defSets:3, defReps:15, defWeight:0,  defInterval:'Kein',  mount:'card-ghd' },
+  { id:'trx',       name:'TRX Session',          type:'trx',       defInterval:'E1:15', mount:'card-trx' }
+];
+
+let session = {};   // working session state, keyed by exercise id
+let timerState = {
+  mode: 'emom',
+  running: false,
+  emomIntervalSec: 60,
+  emomIntervalLabel: 'E1MOM',
+  phase: 'idle',   // 'idle' | 'work' | 'rest' | 'running' | 'done'
+  round: 0,
+  totalRounds: 10,
+  remaining: 60,
+  startedAt: null,
+  rafId: null,
+  fortimeElapsed: 0,
+  fortimeStartedAt: null
+};
+
+/* ═════════════════════════════════════════════════════════
+   INIT
+   ═════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // header date
+  const d = new Date();
+  document.getElementById('today-date').textContent = d.toLocaleDateString('de-DE', { day:'2-digit', month:'short', year:'numeric' });
+  document.getElementById('today-weekday').textContent = d.toLocaleDateString('de-DE', { weekday:'long' });
+
+  // build exercise cards
+  EXERCISES.forEach(buildExerciseCard);
+
+  // build emom interval grid for timer
+  buildEmomIntervalPicker();
+
+  document.getElementById('prog-total').textContent = EXERCISES.length;
+  updateProgress();
+  updateTimerDisplay();
+});
+
+/* ═════════════════════════════════════════════════════════
+   STORAGE HELPERS
+   ═════════════════════════════════════════════════════════ */
+function loadLog() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function saveLog(arr) { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
+
+function loadNames() {
+  try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveName(id, name) {
+  const m = loadNames(); m[id] = name;
+  localStorage.setItem(NAMES_KEY, JSON.stringify(m));
+}
+
+function getLastForExercise(id) {
+  const log = loadLog();
+  for (let i = log.length - 1; i >= 0; i--) {
+    if (log[i].exercises && log[i].exercises[id]) return log[i].exercises[id];
+  }
+  return null;
+}
+
+/* ═════════════════════════════════════════════════════════
+   BUILD EXERCISE CARDS
+   ═════════════════════════════════════════════════════════ */
+function buildExerciseCard(ex) {
+  const last = getLastForExercise(ex.id);
+  const customName = loadNames()[ex.id] || ex.name;
+
+  // figure starting values
+  const setsDefault   = (last && last.sets?.length) || ex.defSets || 4;
+  const lastReps      = last?.sets?.[last.sets.length - 1]?.reps ?? ex.defReps;
+  const lastWeight    = last?.sets?.[last.sets.length - 1]?.weight ?? ex.defWeight;
+  const lastInterval  = last?.interval || ex.defInterval || 'Kein';
+  const lastNote      = last?.note || '';
+
+  // session state init
+  if (ex.type === 'trx') {
+    session[ex.id] = {
+      id: ex.id, type:'trx',
+      name: customName,
+      interval: lastInterval,
+      t: last?.t || '3×20', w: last?.w || '3×12', y: last?.y || '3×15',
+      band: last?.band || '',
+      note: '',
+      done: false
+    };
+  } else {
+    const baseSet = ex.type === 'weighted'
+      ? { reps: lastReps, weight: lastWeight, done: false }
+      : { reps: lastReps, weight: 0, done: false };
+    session[ex.id] = {
+      id: ex.id, type: ex.type,
+      name: customName,
+      interval: lastInterval,
+      sets: Array.from({length: setsDefault}, () => ({...baseSet, done: false})),
+      note: '',
+      done: false
+    };
+  }
+
+  const mount = document.getElementById(ex.mount);
+  mount.outerHTML = renderExerciseCard(ex, session[ex.id], last);
+
+  // wire up after mount
+  attachExerciseHandlers(ex);
+}
+
+function renderExerciseCard(ex, state, last) {
+  const customName = state.name;
+  const intervalChips = INTERVALS.map(iv =>
+    `<button class="interval-btn${state.interval === iv ? ' selected' : ''}" data-iv="${iv}" type="button">${iv}</button>`
+  ).join('');
+
+  // Last summary pills
+  let lastPills = '';
+  if (last) {
+    if (ex.type === 'trx') {
+      lastPills = `
+        <span class="pill">Last: <b>${escapeHtml(last.t || '–')}</b> T</span>
+        <span class="pill"><b>${escapeHtml(last.w || '–')}</b> W</span>
+        <span class="pill"><b>${escapeHtml(last.y || '–')}</b> Y</span>
+        ${last.band ? `<span class="pill">Band: <b>${escapeHtml(last.band)}</b></span>` : ''}
+      `;
+    } else {
+      const totals = last.sets || [];
+      const w = totals[totals.length-1]?.weight || 0;
+      const r = totals[totals.length-1]?.reps || 0;
+      lastPills = `
+        <span class="pill">Last: <b>${totals.length}×${r}</b></span>
+        ${w > 0 ? `<span class="pill">@ <b>${w}kg</b></span>` : '<span class="pill">Bodyweight</span>'}
+        <span class="pill">${escapeHtml(last.interval || '–')}</span>
+      `;
+    }
+  } else {
+    lastPills = `<span class="pill">Erste Session — let's go!</span>`;
+  }
+
+  // Suggestion text
+  let suggestion = '';
+  let hint = '';
+  if (ex.type === 'trx') {
+    suggestion = 'Wiederhole + 1 Rep / Bewegung';
+    hint = '<b>+1</b> Rep<br>bei ✓';
+  } else if (ex.type === 'weighted') {
+    const setsN = state.sets.length;
+    const weight = state.sets[0]?.weight || 0;
+    const reps = state.sets[0]?.reps || 0;
+    suggestion = weight > 0
+      ? `${setsN} × ${reps} @ ${(weight + 2.5).toFixed(1).replace(/\.0$/, '')}kg`
+      : `${setsN} × ${reps + 1}`;
+    hint = '<b>+2.5kg</b><br>bei ✓';
+  } else {
+    const setsN = state.sets.length;
+    const reps = state.sets[0]?.reps || 0;
+    suggestion = `${setsN} × ${reps + 1} BW`;
+    hint = '<b>+1 Rep</b><br>bei ✓';
+  }
+
+  // body content per type
+  let body = '';
+  if (ex.type === 'trx') {
+    body = `
+      <div class="picker-label">Intervall</div>
+      <div class="interval-grid" data-role="intervals">${intervalChips}</div>
+
+      <div class="picker-label">Reps pro Bewegung</div>
+      <div class="trx-grid">
+        <div class="trx-cell"><label>T-Raises</label><input type="text" data-field="t" value="${escapeHtml(state.t)}" placeholder="3×20"></div>
+        <div class="trx-cell"><label>W-Pulls</label><input type="text" data-field="w" value="${escapeHtml(state.w)}" placeholder="3×12"></div>
+        <div class="trx-cell"><label>Y-Raises</label><input type="text" data-field="y" value="${escapeHtml(state.y)}" placeholder="3×15"></div>
+      </div>
+
+      <div class="band-row">
+        <div>
+          <label>Band / Farbe</label>
+          <input type="text" data-field="band" value="${escapeHtml(state.band)}" placeholder="gelb · lila · grün">
+        </div>
+        <div>
+          <label>Notiz</label>
+          <input type="text" data-field="note" value="${escapeHtml(state.note)}" placeholder="optional">
+        </div>
+      </div>
+
+      <button class="btn-done" data-role="mark-done" type="button">Geschafft</button>
+    `;
+  } else {
+    const isWeighted = ex.type === 'weighted';
+    const setsHtml = state.sets.map((s, i) => renderSetRow(ex, s, i)).join('');
+    body = `
+      <div class="picker-label">EMOM Intervall</div>
+      <div class="interval-grid" data-role="intervals">${intervalChips}</div>
+
+      <div class="picker-label">Sätze (${state.sets.length})</div>
+      <div class="sets-wrap" data-role="sets">${setsHtml}</div>
+      <button class="add-set" data-role="add-set" type="button">+ Satz hinzufügen</button>
+
+      <div style="height: 12px"></div>
+      <input type="text" class="note-input" data-field="note" value="${escapeHtml(state.note)}" placeholder="Notiz · z.B. PR, Form, RPE…">
+
+      <button class="btn-done" data-role="mark-done" type="button">Geschafft · ${isWeighted ? '+2.5kg' : '+1 Rep'} vormerken</button>
+    `;
+  }
+
+  // meta line under name
+  let metaText = '';
+  if (ex.type === 'trx') metaText = `<b>${escapeHtml(state.interval)}</b> · T/W/Y`;
+  else if (ex.type === 'weighted') {
+    const w = state.sets[0]?.weight || 0;
+    metaText = `<b>${escapeHtml(state.interval)}</b> · ${state.sets.length}×${state.sets[0]?.reps || 0}${w > 0 ? ' · ' + w + 'kg' : ''}`;
+  } else {
+    metaText = `<b>${escapeHtml(state.interval)}</b> · ${state.sets.length}×${state.sets[0]?.reps || 0} BW`;
+  }
+
+  return `
+    <div class="ex-card" id="${ex.mount}" data-ex="${ex.id}">
+      <div class="ex-header" data-role="toggle">
+        <div class="ex-status"></div>
+        <div class="ex-name-wrap">
+          <input class="ex-name" value="${escapeHtml(customName)}" data-role="name">
+          <div class="ex-meta" data-role="meta">${metaText}</div>
+        </div>
+        <span class="ex-chevron">▼</span>
+      </div>
+      <div class="ex-body">
+        <div class="last-strip">${lastPills}</div>
+
+        <div class="suggestion">
+          <div>
+            <div class="suggestion-label">Vorschlag heute</div>
+            <div class="suggestion-val" data-role="suggestion">${suggestion}</div>
+          </div>
+          <div class="suggestion-hint">${hint}</div>
+        </div>
+
+        ${body}
+      </div>
+    </div>
+  `;
+}
+
+function renderSetRow(ex, set, index) {
+  const isWeighted = ex.type === 'weighted';
+  const wrapClass = `set-row${set.done ? ' complete' : ''}${!isWeighted ? ' bw' : ''}`;
+  return `
+    <div class="${wrapClass}" data-set-idx="${index}">
+      <div class="set-num">${index + 1}</div>
+      <div class="set-input-wrap">
+        <input class="set-input" type="number" inputmode="numeric" data-field="reps"
+               value="${set.reps || ''}" placeholder="${set.reps || 'Reps'}">
+        <span class="unit">reps</span>
+      </div>
+      ${isWeighted ? `
+        <div class="set-input-wrap">
+          <input class="set-input" type="number" inputmode="decimal" step="0.5" data-field="weight"
+                 value="${set.weight || ''}" placeholder="${set.weight || 'kg'}">
+          <span class="unit">kg</span>
+        </div>
+      ` : ''}
+      <button class="set-check" data-role="toggle-set" type="button">${set.done ? '✓' : '○'}</button>
+    </div>
+  `;
+}
+
+/* ═════════════════════════════════════════════════════════
+   ATTACH HANDLERS
+   ═════════════════════════════════════════════════════════ */
+function attachExerciseHandlers(ex) {
+  const card = document.getElementById(ex.mount);
+  if (!card) return;
+  const state = session[ex.id];
+
+  // toggle open/close
+  card.querySelector('[data-role="toggle"]').addEventListener('click', (e) => {
+    if (e.target.closest('.ex-name')) return; // don't toggle when clicking the name input
+    card.classList.toggle('open');
+  });
+
+  // name editing — commit on blur, save to localStorage
+  const nameInput = card.querySelector('.ex-name');
+  nameInput.addEventListener('focus', () => { card.classList.add('open'); });
+  nameInput.addEventListener('blur', () => {
+    const v = nameInput.value.trim() || ex.name;
+    nameInput.value = v;
+    state.name = v;
+    saveName(ex.id, v);
+  });
+  nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') nameInput.blur(); });
+
+  // interval chips
+  card.querySelectorAll('[data-role="intervals"] .interval-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      card.querySelectorAll('[data-role="intervals"] .interval-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.interval = btn.dataset.iv;
+      refreshMeta(ex);
+    });
+  });
+
+  if (ex.type === 'trx') {
+    card.querySelectorAll('[data-field]').forEach(input => {
+      input.addEventListener('input', () => {
+        state[input.dataset.field] = input.value;
+      });
+    });
+  } else {
+    // set rows
+    wireSetRows(ex);
+
+    // add set
+    card.querySelector('[data-role="add-set"]').addEventListener('click', () => {
+      const lastSet = state.sets[state.sets.length - 1] || { reps: 0, weight: 0 };
+      state.sets.push({ reps: lastSet.reps, weight: lastSet.weight, done: false });
+      rerenderSets(ex);
+    });
+
+    // note
+    const noteInput = card.querySelector('input[data-field="note"]');
+    if (noteInput) noteInput.addEventListener('input', () => { state.note = noteInput.value; });
+  }
+
+  // mark done
+  card.querySelector('[data-role="mark-done"]').addEventListener('click', () => markExerciseDone(ex));
+}
+
+function wireSetRows(ex) {
+  const card = document.getElementById(ex.mount);
+  const state = session[ex.id];
+
+  card.querySelectorAll('.set-row').forEach((row, idx) => {
+    const set = state.sets[idx];
+    // inputs
+    row.querySelectorAll('input[data-field]').forEach(input => {
+      input.addEventListener('input', () => {
+        const v = input.value === '' ? 0 : parseFloat(input.value);
+        set[input.dataset.field] = isNaN(v) ? 0 : v;
+      });
+    });
+    // toggle done
+    row.querySelector('[data-role="toggle-set"]').addEventListener('click', () => {
+      set.done = !set.done;
+      row.classList.toggle('complete', set.done);
+      row.querySelector('[data-role="toggle-set"]').textContent = set.done ? '✓' : '○';
+
+      // when completing a set, auto-focus next set
+      if (set.done && idx < state.sets.length - 1) {
+        const next = card.querySelectorAll('.set-row')[idx + 1];
+        const nextInput = next?.querySelector('input[data-field="reps"]');
+        if (nextInput) setTimeout(() => nextInput.focus(), 100);
+      }
+      beep(880, 60, 0.08);
+    });
+  });
+}
+
+function rerenderSets(ex) {
+  const card = document.getElementById(ex.mount);
+  const wrap = card.querySelector('[data-role="sets"]');
+  const state = session[ex.id];
+  wrap.innerHTML = state.sets.map((s, i) => renderSetRow(ex, s, i)).join('');
+  card.querySelector('.picker-label:nth-of-type(2)'); // no-op
+  // update sets count label
+  const labels = card.querySelectorAll('.picker-label');
+  if (labels[1]) labels[1].textContent = `Sätze (${state.sets.length})`;
+  wireSetRows(ex);
+  refreshMeta(ex);
+}
+
+function refreshMeta(ex) {
+  const card = document.getElementById(ex.mount);
+  const state = session[ex.id];
+  const metaEl = card.querySelector('[data-role="meta"]');
+  if (!metaEl) return;
+  let meta = '';
+  if (ex.type === 'trx') meta = `<b>${escapeHtml(state.interval)}</b> · T/W/Y`;
+  else if (ex.type === 'weighted') {
+    const w = state.sets[0]?.weight || 0;
+    meta = `<b>${escapeHtml(state.interval)}</b> · ${state.sets.length}×${state.sets[0]?.reps || 0}${w > 0 ? ' · ' + w + 'kg' : ''}`;
+  } else {
+    meta = `<b>${escapeHtml(state.interval)}</b> · ${state.sets.length}×${state.sets[0]?.reps || 0} BW`;
+  }
+  metaEl.innerHTML = meta;
+}
+
+/* ═════════════════════════════════════════════════════════
+   MARK EXERCISE DONE
+   — apply progressive overload, mark card, close
+   ═════════════════════════════════════════════════════════ */
+function markExerciseDone(ex) {
+  const state = session[ex.id];
+  const card = document.getElementById(ex.mount);
+
+  // For weighted/bw: apply +2.5kg / +1rep to whichever sets are still empty (i.e. fill in suggestion)
+  if (ex.type === 'weighted' || ex.type === 'bodyweight') {
+    state.sets.forEach((s, i) => {
+      // if user didn't fill values, fall back to placeholder defaults (already set)
+      if (!s.reps || s.reps <= 0) {
+        const last = getLastForExercise(ex.id);
+        const lr = last?.sets?.[i]?.reps || last?.sets?.[0]?.reps || ex.defReps;
+        s.reps = ex.type === 'bodyweight' ? lr + 1 : lr;
+      }
+      if (ex.type === 'weighted' && (s.weight === undefined || s.weight === null || s.weight < 0 || isNaN(s.weight) || s.weight === 0 && (getLastForExercise(ex.id)?.sets?.[0]?.weight || 0) > 0)) {
+        const last = getLastForExercise(ex.id);
+        const lw = last?.sets?.[i]?.weight || last?.sets?.[0]?.weight || ex.defWeight;
+        if (lw > 0 && (!s.weight || s.weight === 0)) s.weight = lw + 2.5;
+      }
+      s.done = true;
+    });
+  }
+
+  state.done = true;
+  card.classList.add('done');
+  card.classList.remove('open');
+
+  const btn = card.querySelector('[data-role="mark-done"]');
+  btn.classList.add('success');
+  btn.textContent = '✓ Erledigt';
+
+  // re-render sets in their now-final state
+  if (ex.type !== 'trx') rerenderSets(ex);
+
+  // gentle beep + vibrate
+  beep(660, 80, 0.07);
+  setTimeout(() => beep(880, 80, 0.07), 90);
+  vibrate(40);
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = EXERCISES.length;
+  const done = EXERCISES.filter(e => session[e.id]?.done).length;
+  document.getElementById('prog-done').textContent = done;
+  document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
+
+  const saveBtn = document.getElementById('save-btn');
+  if (done === total) {
+    saveBtn.classList.add('ready');
+    saveBtn.textContent = `Alle erledigt — Session Speichern`;
+  } else if (done > 0) {
+    saveBtn.classList.remove('saved');
+    saveBtn.classList.add('ready');
+    saveBtn.textContent = `Session Speichern (${done}/${total})`;
+  } else {
+    saveBtn.classList.remove('ready', 'saved');
+    saveBtn.textContent = 'Session Speichern';
+  }
+}
+
+/* ═════════════════════════════════════════════════════════
+   SAVE SESSION → localStorage
+   ═════════════════════════════════════════════════════════ */
+function saveSession() {
+  // build payload from session state
+  const exercises = {};
+  EXERCISES.forEach(ex => {
+    const s = session[ex.id];
+    if (!s) return;
+    if (ex.type === 'trx') {
+      exercises[ex.id] = {
+        name: s.name, type: 'trx', interval: s.interval,
+        t: s.t, w: s.w, y: s.y, band: s.band, note: s.note,
+        done: s.done
+      };
+    } else {
+      // keep only sets with actual data
+      const filledSets = s.sets.map(set => ({
+        reps: set.reps || 0,
+        weight: set.weight || 0,
+        done: set.done
+      }));
+      exercises[ex.id] = {
+        name: s.name, type: ex.type, interval: s.interval,
+        sets: filledSets, note: s.note, done: s.done
+      };
+    }
+  });
+
+  const log = loadLog();
+  log.push({
+    date: new Date().toISOString(),
+    exercises
+  });
+  saveLog(log);
+
+  // feedback
+  const btn = document.getElementById('save-btn');
+  btn.classList.remove('ready');
+  btn.classList.add('saved');
+  btn.textContent = '✓ Gespeichert';
+  beep(880, 100, 0.08);
+  setTimeout(() => beep(1100, 100, 0.08), 110);
+  vibrate([30, 60, 30]);
+
+  // reset session state after a moment, switch to log
+  setTimeout(() => {
+    EXERCISES.forEach(buildExerciseCard);
+    updateProgress();
+    switchTab('log', document.querySelector('[data-target="log"]'));
+  }, 900);
+}
+
+/* ═════════════════════════════════════════════════════════
+   VERLAUF
+   ═════════════════════════════════════════════════════════ */
+function renderLog() {
+  const log = loadLog();
+  const container = document.getElementById('log-content');
+  const statsWrap = document.getElementById('log-stats-wrap');
+
+  if (!log.length) {
+    statsWrap.innerHTML = '';
+    container.innerHTML = `
+      <div class="log-empty">
+        <div class="icon">◇</div>
+        Noch keine Sessions.<br>
+        Starte deine erste Session im <b style="color:var(--accent)">Session</b>-Tab.
+      </div>
+    `;
+    return;
+  }
+
+  // stats
+  const totalSessions = log.length;
+  const last30 = log.filter(e => new Date(e.date) > new Date(Date.now() - 30*24*60*60*1000)).length;
+  // current streak (consecutive days back from today)
+  const dates = new Set(log.map(e => new Date(e.date).toDateString()));
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    if (dates.has(d.toDateString())) streak++;
+    else if (i > 0) break;
+  }
+
+  statsWrap.innerHTML = `
+    <div class="log-stats">
+      <div class="stat"><div class="num accent">${totalSessions}</div><div class="label">Total</div></div>
+      <div class="stat"><div class="num">${last30}</div><div class="label">30 Tage</div></div>
+      <div class="stat"><div class="num">${streak}</div><div class="label">Streak</div></div>
+    </div>
+  `;
+
+  container.innerHTML = [...log].reverse().map((entry, idx) => {
+    const d = new Date(entry.date);
+    const weekday = d.toLocaleDateString('de-DE', { weekday:'short' });
+    const dateStr = d.toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+    const exCount = Object.values(entry.exercises || {}).filter(e => e.done).length;
+
+    const exHtml = Object.entries(entry.exercises || {}).map(([key, ex]) => {
+      if (ex.type === 'trx') {
+        return `
+          <div class="log-ex">
+            <div>
+              <div class="name">${escapeHtml(ex.name || 'TRX')}</div>
+              ${ex.note ? `<div class="note">${escapeHtml(ex.note)}</div>` : ''}
+            </div>
+            <div class="val">
+              <span class="interval">${escapeHtml(ex.interval || '')}</span>
+              ${escapeHtml(ex.t||'–')} · ${escapeHtml(ex.w||'–')} · ${escapeHtml(ex.y||'–')}
+              ${ex.band ? `<div style="color:var(--muted);font-size:0.6rem">Band: ${escapeHtml(ex.band)}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+      const sets = ex.sets || [];
+      const repsList = sets.map(s => s.reps || 0);
+      const allSameReps = repsList.every(r => r === repsList[0]);
+      const repsStr = allSameReps ? `${sets.length}×${repsList[0] || 0}` : repsList.join('·');
+      const weights = sets.map(s => s.weight || 0).filter(w => w > 0);
+      const wStr = weights.length ? `@ ${[...new Set(weights)].join('/')}kg` : 'BW';
+      return `
+        <div class="log-ex">
+          <div>
+            <div class="name">${escapeHtml(ex.name || key)}</div>
+            ${ex.note ? `<div class="note">${escapeHtml(ex.note)}</div>` : ''}
+          </div>
+          <div class="val">
+            ${ex.interval && ex.interval !== 'Kein' ? `<span class="interval">${escapeHtml(ex.interval)}</span>` : ''}
+            ${repsStr} ${wStr}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="log-entry" data-log-idx="${idx}">
+        <div class="log-entry-head" onclick="this.parentElement.classList.toggle('expanded')">
+          <div class="log-date">
+            <span class="day">${weekday}</span>
+            ${dateStr}
+          </div>
+          <div class="log-count">${exCount} Übungen</div>
+        </div>
+        <div class="log-body">${exHtml}</div>
+      </div>
+    `;
+  }).join('') + `
+    <button class="btn-clear" onclick="clearLog()">Log löschen</button>
+  `;
+}
+
+function clearLog() {
+  if (!confirm('Wirklich alle gespeicherten Sessions löschen?\nDas kann nicht rückgängig gemacht werden.')) return;
+  localStorage.removeItem(STORE_KEY);
+  renderLog();
+}
+
+/* ═════════════════════════════════════════════════════════
+   TIMER
+   ═════════════════════════════════════════════════════════ */
+function buildEmomIntervalPicker() {
+  const wrap = document.getElementById('emom-interval-grid');
+  wrap.innerHTML = INTERVALS.filter(iv => iv !== 'Kein').map(iv =>
+    `<button class="interval-btn${iv === 'E1MOM' ? ' selected' : ''}" data-iv="${iv}" type="button">${iv}</button>`
+  ).join('');
+  wrap.querySelectorAll('.interval-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      wrap.querySelectorAll('.interval-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      timerState.emomIntervalLabel = btn.dataset.iv;
+      timerState.emomIntervalSec = INTERVAL_SECONDS[btn.dataset.iv];
+      document.getElementById('emom-interval-display').value = formatTime(timerState.emomIntervalSec);
+      if (!timerState.running) {
+        timerState.remaining = timerState.emomIntervalSec;
+        updateTimerDisplay();
+      }
+    });
+  });
+}
+
+function bumpEmomRounds(delta) {
+  const inp = document.getElementById('emom-rounds');
+  let v = (parseInt(inp.value) || 1) + delta;
+  v = Math.max(1, Math.min(99, v));
+  inp.value = v;
+  timerState.totalRounds = v;
+  updateTimerDisplay();
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'emom-rounds') {
+    timerState.totalRounds = parseInt(e.target.value) || 1;
+    if (!timerState.running) updateTimerDisplay();
+  }
+});
+
+function setTimerMode(mode, btn) {
+  if (timerState.running) timerReset();
+  timerState.mode = mode;
+  document.querySelectorAll('.timer-mode').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('config-emom').style.display    = mode === 'emom' ? 'block' : 'none';
+  document.getElementById('config-fortime').style.display = mode === 'fortime' ? 'block' : 'none';
+  document.getElementById('config-tabata').style.display  = mode === 'tabata' ? 'block' : 'none';
+
+  // reset display
+  timerState.phase = 'idle';
+  timerState.round = 0;
+  if (mode === 'emom') {
+    timerState.remaining = timerState.emomIntervalSec;
+    timerState.totalRounds = parseInt(document.getElementById('emom-rounds').value) || 10;
+  } else if (mode === 'fortime') {
+    timerState.fortimeElapsed = 0;
+    timerState.fortimeStartedAt = null;
+  } else if (mode === 'tabata') {
+    timerState.remaining = parseInt(document.getElementById('tabata-work').value) || 20;
+    timerState.totalRounds = parseInt(document.getElementById('tabata-rounds').value) || 8;
+  }
+  updateTimerDisplay();
+}
+
+function timerToggle() {
+  if (timerState.running) timerPause();
+  else timerStart();
+}
+
+function timerStart() {
+  initAudio(); // unlock audio on user gesture
+
+  if (timerState.mode === 'emom') {
+    if (timerState.phase === 'idle' || timerState.phase === 'done') {
+      timerState.round = 1;
+      timerState.totalRounds = parseInt(document.getElementById('emom-rounds').value) || 10;
+      timerState.remaining = timerState.emomIntervalSec;
+    }
+    timerState.phase = 'running';
+    timerState.startedAt = performance.now() - (timerState.emomIntervalSec - timerState.remaining) * 1000;
+    beep(880, 120, 0.1); vibrate(60);
+  } else if (timerState.mode === 'fortime') {
+    timerState.phase = 'running';
+    timerState.fortimeStartedAt = performance.now() - timerState.fortimeElapsed * 1000;
+    beep(880, 120, 0.1); vibrate(60);
+  } else if (timerState.mode === 'tabata') {
+    if (timerState.phase === 'idle' || timerState.phase === 'done') {
+      timerState.round = 1;
+      timerState.totalRounds = parseInt(document.getElementById('tabata-rounds').value) || 8;
+      timerState.phase = 'work';
+      timerState.remaining = parseInt(document.getElementById('tabata-work').value) || 20;
+    } else if (timerState.phase === 'work-paused') {
+      timerState.phase = 'work';
+    } else if (timerState.phase === 'rest-paused') {
+      timerState.phase = 'rest';
+    }
+    timerState.startedAt = performance.now() - ((currentTabataPhaseLen() - timerState.remaining) * 1000);
+    beep(880, 120, 0.1); vibrate(60);
+  }
+  timerState.running = true;
+  document.getElementById('btn-start').textContent = 'Pause';
+  document.getElementById('btn-start').classList.add('paused');
+  tickLoop();
+}
+
+function timerPause() {
+  timerState.running = false;
+  if (timerState.rafId) cancelAnimationFrame(timerState.rafId);
+  if (timerState.mode === 'tabata') {
+    if (timerState.phase === 'work') timerState.phase = 'work-paused';
+    else if (timerState.phase === 'rest') timerState.phase = 'rest-paused';
+  }
+  document.getElementById('btn-start').textContent = 'Weiter';
+  document.getElementById('btn-start').classList.remove('paused');
+}
+
+function timerReset() {
+  timerState.running = false;
+  if (timerState.rafId) cancelAnimationFrame(timerState.rafId);
+  timerState.phase = 'idle';
+  timerState.round = 0;
+  if (timerState.mode === 'emom') {
+    timerState.remaining = timerState.emomIntervalSec;
+    timerState.totalRounds = parseInt(document.getElementById('emom-rounds').value) || 10;
+  } else if (timerState.mode === 'fortime') {
+    timerState.fortimeElapsed = 0;
+    timerState.fortimeStartedAt = null;
+  } else if (timerState.mode === 'tabata') {
+    timerState.remaining = parseInt(document.getElementById('tabata-work').value) || 20;
+    timerState.totalRounds = parseInt(document.getElementById('tabata-rounds').value) || 8;
+  }
+  document.getElementById('btn-start').textContent = 'Start';
+  document.getElementById('btn-start').classList.remove('paused');
+  updateTimerDisplay();
+}
+
+function currentTabataPhaseLen() {
+  if (timerState.phase === 'work' || timerState.phase === 'work-paused') {
+    return parseInt(document.getElementById('tabata-work').value) || 20;
+  } else {
+    return parseInt(document.getElementById('tabata-rest').value) || 10;
+  }
+}
+
+function tickLoop() {
+  if (!timerState.running) return;
+  const now = performance.now();
+
+  if (timerState.mode === 'emom') {
+    const elapsed = (now - timerState.startedAt) / 1000;
+    let remaining = timerState.emomIntervalSec - elapsed;
+    if (remaining <= 0) {
+      // round transition
+      if (timerState.round >= timerState.totalRounds) {
+        // done
+        timerState.phase = 'done';
+        timerState.remaining = 0;
+        timerState.running = false;
+        beep(440, 150, 0.1); setTimeout(() => beep(660, 150, 0.1), 160); setTimeout(() => beep(880, 250, 0.1), 320);
+        vibrate([100, 80, 100, 80, 200]);
+        document.getElementById('btn-start').textContent = 'Start';
+        document.getElementById('btn-start').classList.remove('paused');
+        updateTimerDisplay();
+        return;
+      }
+      timerState.round++;
+      timerState.startedAt = now;
+      remaining = timerState.emomIntervalSec;
+      beep(1100, 100, 0.1); setTimeout(() => beep(1100, 100, 0.1), 110);
+      vibrate([50, 30, 50]);
+    } else if (remaining <= 3 && Math.ceil(remaining) !== timerState._lastCountdown) {
+      // countdown 3-2-1
+      timerState._lastCountdown = Math.ceil(remaining);
+      beep(660, 80, 0.06);
+      vibrate(20);
+    }
+    timerState.remaining = remaining;
+  } else if (timerState.mode === 'fortime') {
+    timerState.fortimeElapsed = (now - timerState.fortimeStartedAt) / 1000;
+  } else if (timerState.mode === 'tabata') {
+    const phaseLen = currentTabataPhaseLen();
+    const elapsed = (now - timerState.startedAt) / 1000;
+    let remaining = phaseLen - elapsed;
+    if (remaining <= 0) {
+      if (timerState.phase === 'work') {
+        // → rest
+        if (timerState.round >= timerState.totalRounds) {
+          timerState.phase = 'done';
+          timerState.remaining = 0;
+          timerState.running = false;
+          beep(440, 150, 0.1); setTimeout(() => beep(660, 150, 0.1), 160); setTimeout(() => beep(880, 250, 0.1), 320);
+          vibrate([100, 80, 100, 80, 200]);
+          document.getElementById('btn-start').textContent = 'Start';
+          document.getElementById('btn-start').classList.remove('paused');
+          updateTimerDisplay();
+          return;
+        }
+        timerState.phase = 'rest';
+        timerState.startedAt = now;
+        remaining = parseInt(document.getElementById('tabata-rest').value) || 10;
+        beep(440, 200, 0.1);
+        vibrate([80, 40, 80]);
+      } else {
+        // rest → work, increment round
+        timerState.round++;
+        timerState.phase = 'work';
+        timerState.startedAt = now;
+        remaining = parseInt(document.getElementById('tabata-work').value) || 20;
+        beep(1100, 120, 0.1); setTimeout(() => beep(1100, 120, 0.1), 130);
+        vibrate([50, 30, 50, 30, 50]);
+      }
+    } else if (remaining <= 3 && Math.ceil(remaining) !== timerState._lastCountdown) {
+      timerState._lastCountdown = Math.ceil(remaining);
+      beep(660, 80, 0.06);
+      vibrate(20);
+    }
+    timerState.remaining = remaining;
+  }
+
+  updateTimerDisplay();
+  timerState.rafId = requestAnimationFrame(tickLoop);
+}
+
+function updateTimerDisplay() {
+  const disp = document.getElementById('timer-display');
+  const phaseEl = document.getElementById('timer-phase');
+  const timeEl = document.getElementById('timer-time');
+  const roundEl = document.getElementById('timer-round');
+  const totalEl = document.getElementById('timer-total');
+  const totalWrap = document.getElementById('timer-total-wrap');
+  const fill = document.getElementById('ring-fg');
+  const RING_CIRC = 552.92; // 2 * PI * 88
+
+  disp.classList.remove('work', 'rest', 'active', 'done');
+
+  if (timerState.mode === 'fortime') {
+    phaseEl.textContent = timerState.phase === 'idle' ? 'BEREIT' : timerState.phase === 'running' ? '◉ FOR TIME' : 'PAUSE';
+    if (timerState.phase === 'running') disp.classList.add('active');
+    timeEl.textContent = formatTime(timerState.fortimeElapsed, true);
+    roundEl.textContent = '∞';
+    totalWrap.style.display = 'none';
+    // pulse fill on running, empty otherwise
+    if (timerState.phase === 'running') {
+      // animate ring as a slow sweep showing progress in current minute
+      const minProgress = (timerState.fortimeElapsed % 60) / 60;
+      fill.setAttribute('stroke-dashoffset', RING_CIRC * (1 - minProgress));
+    } else {
+      fill.setAttribute('stroke-dashoffset', RING_CIRC);
+    }
+    return;
+  }
+
+  totalWrap.style.display = '';
+  const intSec = timerState.mode === 'emom' ? timerState.emomIntervalSec
+                                            : (timerState.phase === 'work' || timerState.phase === 'work-paused' ? (parseInt(document.getElementById('tabata-work').value)||20)
+                                            : (parseInt(document.getElementById('tabata-rest').value)||10));
+  const totalSec = timerState.mode === 'emom'
+    ? timerState.emomIntervalSec * timerState.totalRounds
+    : ((parseInt(document.getElementById('tabata-work').value)||20) + (parseInt(document.getElementById('tabata-rest').value)||10)) * timerState.totalRounds;
+
+  timeEl.textContent = formatTime(Math.max(0, timerState.remaining));
+  roundEl.textContent = `${timerState.round || 0}/${timerState.totalRounds}`;
+  totalEl.textContent = formatTime(totalSec);
+
+  if (timerState.mode === 'tabata') {
+    if (timerState.phase === 'work' || timerState.phase === 'work-paused') {
+      disp.classList.add('work');
+      phaseEl.textContent = timerState.phase === 'work-paused' ? 'PAUSIERT · WORK' : '◉ WORK';
+    } else if (timerState.phase === 'rest' || timerState.phase === 'rest-paused') {
+      disp.classList.add('rest');
+      phaseEl.textContent = timerState.phase === 'rest-paused' ? 'PAUSIERT · REST' : '○ REST';
+    } else if (timerState.phase === 'done') {
+      phaseEl.textContent = '✓ FERTIG';
+    } else {
+      phaseEl.textContent = 'BEREIT';
+    }
+  } else {
+    // emom
+    if (timerState.phase === 'running') { disp.classList.add('active'); phaseEl.textContent = '◉ EMOM'; }
+    else if (timerState.phase === 'done') { phaseEl.textContent = '✓ FERTIG'; }
+    else { phaseEl.textContent = 'BEREIT'; }
+  }
+
+  // Circular ring: ring drains as the round counts DOWN
+  const ratio = intSec > 0 ? Math.max(0, Math.min(1, timerState.remaining / intSec)) : 0;
+  fill.setAttribute('stroke-dashoffset', RING_CIRC * (1 - ratio));
+  if (timerState.phase === 'done') disp.classList.add('done');
+}
+
+function formatTime(sec, includeHundredths) {
+  sec = Math.max(0, sec);
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  const pad = (n) => String(n).padStart(2, '0');
+  if (includeHundredths) {
+    const hs = Math.floor((sec - Math.floor(sec)) * 100);
+    return `${pad(m)}:${pad(s)}.${pad(hs)}`;
+  }
+  return `${pad(m)}:${pad(s)}`;
+}
+
+/* ═════════════════════════════════════════════════════════
+   AUDIO + VIBRATION
+   ═════════════════════════════════════════════════════════ */
+let audioCtx = null;
+function initAudio() {
+  if (audioCtx) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audioCtx = new AC();
+  } catch(e) {}
+}
+function beep(freq, duration, gain) {
+  if (!audioCtx) initAudio();
+  if (!audioCtx) return;
+  try {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    g.gain.value = 0;
+    osc.connect(g); g.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(gain || 0.1, now + 0.005);
+    g.gain.linearRampToValueAtTime(0, now + (duration || 100) / 1000);
+    osc.start(now);
+    osc.stop(now + (duration || 100) / 1000 + 0.02);
+  } catch(e) {}
+}
+function vibrate(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+/* ═════════════════════════════════════════════════════════
+   TABS
+   ═════════════════════════════════════════════════════════ */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelector(`[data-target="${name}"]`)?.classList.add('active');
+  document.body.dataset.tab = name;
+  if (name === 'log') renderLog();
+}
+
+/* ═════════════════════════════════════════════════════════
+   UTIL
+   ═════════════════════════════════════════════════════════ */
+function escapeHtml(s) {
+  if (s === undefined || s === null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+
+// Prevent iOS zoom on input focus (keeps font-size 16px)
+// Already enforced via CSS rules above
+
+// Unlock audio on first user interaction
+document.addEventListener('touchstart', initAudio, { once: true });
+document.addEventListener('click', initAudio, { once: true });
+</script>
+</body>
+</html>
