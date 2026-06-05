@@ -2273,8 +2273,20 @@ function initAudio() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     audioCtx = new AC();
+    // iOS Safari requires resume() inside a user gesture; play a silent
+    // buffer immediately so the context is unlocked for later timer beeps.
+    audioCtx.resume();
   } catch(e) {}
 }
+// Unlock audio on first user interaction — required by iOS Safari for
+// AudioContext to work when later triggered from timer callbacks.
+['touchstart', 'touchend', 'click'].forEach(evt =>
+  document.addEventListener(evt, function unlock() {
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    document.removeEventListener(evt, unlock, true);
+  }, { once: true, capture: true })
+);
 function beep(freq, duration, gain) {
   if (!audioCtx) initAudio();
   if (!audioCtx) return;
